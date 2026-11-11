@@ -4,10 +4,10 @@ Game ular arena berbasis Canvas, dibuat dengan HTML, CSS, dan JavaScript tanpa d
 
 ## Menjalankan secara lokal
 
-Buka `dist/index.html` di browser, atau jalankan server statis dari folder ini:
+Buka `index.html` di browser, atau jalankan server statis dari folder ini:
 
 ```sh
-python3 -m http.server 4173 --directory dist
+python3 -m http.server 4173
 ```
 
 Lalu buka `http://localhost:4173`.
