@@ -62,7 +62,7 @@
     for (let i = 0; i < length + 32; i += 5) {
       trail.push({ x: x - Math.cos(angle) * i, y: y - Math.sin(angle) * i });
     }
-    return { name, x, y, angle, targetAngle: angle, color, ai, length,
+    return { name, x, y, angle, targetAngle: angle, currentSpeed: ai ? 115 : 145, color, ai, length,
       trail, score: ai ? Math.round(rand(190, 860) / 10) * 10 : 0,
       alive: true, respawn: 0, think: 0, target: null, boost: false };
   }
@@ -207,13 +207,18 @@
       }
       return;
     }
-    snake.targetAngle = snake.ai ? botAngle(snake, dt) : controlAngle();
-    const turning = clamp(angleDifference(snake.angle, snake.targetAngle), -3.4 * dt, 3.4 * dt);
+    const desiredAngle = snake.ai ? botAngle(snake, dt) : controlAngle();
+    const steeringSmoothing = snake.ai ? 6 : 12;
+    snake.targetAngle += angleDifference(snake.targetAngle, desiredAngle) * Math.min(1, dt * steeringSmoothing);
+    const turnRate = snake.ai ? 2.9 : 4.2;
+    const turning = clamp(angleDifference(snake.angle, snake.targetAngle), -turnRate * dt, turnRate * dt);
     snake.angle += turning;
     snake.boost = !snake.ai && boostPressed && snake.length > 155;
-    const speed = snake.boost ? 280 : snake.ai ? 135 : 165;
-    snake.x += Math.cos(snake.angle) * speed * dt;
-    snake.y += Math.sin(snake.angle) * speed * dt;
+    const targetSpeed = snake.boost ? 235 : snake.ai ? 115 : 145;
+    const acceleration = snake.boost ? 5 : 7;
+    snake.currentSpeed += (targetSpeed - snake.currentSpeed) * Math.min(1, dt * acceleration);
+    snake.x += Math.cos(snake.angle) * snake.currentSpeed * dt;
+    snake.y += Math.sin(snake.angle) * snake.currentSpeed * dt;
     if (snake.boost) {
       snake.length -= 22 * dt;
       if (Math.random() < dt * 8) spawnPellet(snake.x - Math.cos(snake.angle) * snake.length * .7 + rand(-8, 8), snake.y - Math.sin(snake.angle) * snake.length * .7 + rand(-8, 8));
@@ -413,8 +418,10 @@
   }
 
   function setPointerDirection(event) {
-    const dx = event.clientX - width / 2, dy = event.clientY - height / 2;
-    if (Math.hypot(dx, dy) > 20) pointerDirection = Math.atan2(dy, dx);
+    const box = canvas.getBoundingClientRect();
+    const dx = event.clientX - (box.left + box.width / 2);
+    const dy = event.clientY - (box.top + box.height / 2);
+    if (Math.hypot(dx, dy) > 16) pointerDirection = Math.atan2(dy, dx);
   }
   function moveJoystick(event) {
     const box = ui.joystick.getBoundingClientRect();
