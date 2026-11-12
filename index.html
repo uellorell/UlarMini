@@ -7,6 +7,28 @@
   <meta name="description" content="Ular Neon, game arena ular penuh warna. Kumpulkan orb, tumbuh panjang, dan kuasai papan peringkat.">
   <title>Ular Neon — Kuasai Arena</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    html, body { overflow: auto; }
+    body {
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding: 24px 0;
+      background: radial-gradient(circle at 50% 20%, #203a6d 0, #09152c 62%, #040a18 100%);
+    }
+    #game {
+      width: min(100vw, 360px);
+      height: min(640px, calc(100dvh - 48px));
+      min-height: 460px;
+      border: 3px solid #416fae;
+      border-radius: 28px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .5);
+    }
+    @media (max-width: 360px) {
+      body { padding: 0; }
+      #game { height: 100dvh; border: 0; border-radius: 0; }
+    }
+  </style>
 </head>
 <body>
   <main id="game" aria-label="Game Ular Neon">

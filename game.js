@@ -47,8 +47,9 @@
   }
 
   function resize() {
-    width = window.innerWidth;
-    height = window.innerHeight;
+    const game = document.getElementById('game');
+    width = game.clientWidth;
+    height = game.clientHeight;
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = Math.round(width * dpr);
     canvas.height = Math.round(height * dpr);
