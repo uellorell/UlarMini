@@ -228,11 +228,11 @@
     snake.trail.length = end;
     if (snake.x < 22 || snake.y < 22 || snake.x > WORLD.w - 22 || snake.y > WORLD.h - 22) { kill(snake); return; }
     for (const rock of rocks) {
-      if (dist2(snake.x, snake.y, rock.x, rock.y) < (rock.r + 10) ** 2) { kill(snake); return; }
+      if (dist2(snake.x, snake.y, rock.x, rock.y) < (rock.r + 8) ** 2) { kill(snake); return; }
     }
     for (let i = pellets.length - 1; i >= 0; i--) {
       const p = pellets[i];
-      if (dist2(snake.x, snake.y, p.x, p.y) < (p.r + 19) ** 2) {
+      if (dist2(snake.x, snake.y, p.x, p.y) < (p.r + 15) ** 2) {
         snake.score += p.value;
         snake.length = Math.min(1050, snake.length + (p.value === 65 ? 27 : 12));
         pellets.splice(i, 1);
@@ -260,7 +260,7 @@
         const skip = other === snake ? 26 : 5;
         for (let i = skip; i < other.trail.length; i += 3) {
           const p = other.trail[i];
-          if (dist2(snake.x, snake.y, p.x, p.y) < 22 ** 2) {
+          if (dist2(snake.x, snake.y, p.x, p.y) < 16 ** 2) {
             kill(snake); break;
           }
         }
@@ -343,46 +343,46 @@
     const palette = COLORS[snake.color];
     const path = snake.trail;
     ctx.save();
-    ctx.shadowColor = palette.glow; ctx.shadowBlur = snake === player ? 23 : 12;
-    ctx.strokeStyle = palette.base; ctx.lineWidth = 37; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.shadowColor = palette.glow; ctx.shadowBlur = snake === player ? 17 : 9;
+    ctx.strokeStyle = palette.base; ctx.lineWidth = 27; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
     ctx.beginPath();
     for (let i = path.length - 1; i >= 0; i--) {
       const p = path[i]; if (i === path.length - 1) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
     }
     ctx.stroke(); ctx.shadowBlur = 0;
     // Short strokes sit on the continuous body to make clean curved stripes.
-    ctx.strokeStyle = palette.light; ctx.lineWidth = 36; ctx.lineCap = 'butt';
+    ctx.strokeStyle = palette.light; ctx.lineWidth = 26; ctx.lineCap = 'butt';
     for (let i = 8; i < path.length - 5; i += 16) {
       ctx.beginPath(); ctx.moveTo(path[i].x, path[i].y);
       for (let j = i + 1; j <= Math.min(i + 8, path.length - 6); j++) ctx.lineTo(path[j].x, path[j].y);
       ctx.stroke();
     }
     ctx.translate(snake.x, snake.y); ctx.rotate(snake.angle);
-    const head = ctx.createRadialGradient(-8, -10, 3, 0, 0, 28);
+    const head = ctx.createRadialGradient(-6, -8, 2, 0, 0, 21);
     head.addColorStop(0, palette.light); head.addColorStop(.63, palette.base); head.addColorStop(1, palette.dark);
-    ctx.fillStyle = head; ctx.shadowColor = palette.glow; ctx.shadowBlur = 12;
-    ctx.beginPath(); ctx.ellipse(0, 0, 23, 21, 0, 0, TAU); ctx.fill(); ctx.shadowBlur = 0;
+    ctx.fillStyle = head; ctx.shadowColor = palette.glow; ctx.shadowBlur = 9;
+    ctx.beginPath(); ctx.ellipse(0, 0, 18, 16, 0, 0, TAU); ctx.fill(); ctx.shadowBlur = 0;
     ctx.fillStyle = 'rgba(0,0,0,.19)';
-    ctx.beginPath(); ctx.arc(16, 4, 4, 0, Math.PI); ctx.fill();
-    for (const y of [-9, 9]) {
-      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.ellipse(8, y, 7.6, 8.4, 0, 0, TAU); ctx.fill();
-      ctx.fillStyle = '#152344'; ctx.beginPath(); ctx.arc(11, y + .7, 4.4, 0, TAU); ctx.fill();
-      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(12, y - 1.1, 1.5, 0, TAU); ctx.fill();
+    ctx.beginPath(); ctx.arc(12, 3, 3, 0, Math.PI); ctx.fill();
+    for (const y of [-7, 7]) {
+      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.ellipse(6, y, 5.7, 6.3, 0, 0, TAU); ctx.fill();
+      ctx.fillStyle = '#152344'; ctx.beginPath(); ctx.arc(8, y + .5, 3.3, 0, TAU); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(9, y - .8, 1.1, 0, TAU); ctx.fill();
     }
-    ctx.fillStyle = 'rgba(18,42,64,.28)'; ctx.beginPath(); ctx.arc(-9, -12, 2, 0, TAU); ctx.arc(-13, 11, 2, 0, TAU); ctx.fill();
+    ctx.fillStyle = 'rgba(18,42,64,.28)'; ctx.beginPath(); ctx.arc(-7, -9, 1.5, 0, TAU); ctx.arc(-10, 8, 1.5, 0, TAU); ctx.fill();
     ctx.restore();
-    if (snake === player) drawCrown(snake.x, snake.y - 39);
+    if (snake === player) drawCrown(snake.x, snake.y - 29);
     if (snake.boost) {
-      ctx.strokeStyle = 'rgba(255,220,89,.28)'; ctx.lineWidth = 3;
+      ctx.strokeStyle = 'rgba(255,220,89,.28)'; ctx.lineWidth = 2;
       for (let i = 0; i < 3; i++) {
-        const x = snake.x - Math.cos(snake.angle) * (35 + i * 19);
-        const y = snake.y - Math.sin(snake.angle) * (35 + i * 19);
-        ctx.beginPath(); ctx.arc(x, y, 18 + i * 4, snake.angle + 2.5, snake.angle + 3.8); ctx.stroke();
+        const x = snake.x - Math.cos(snake.angle) * (27 + i * 15);
+        const y = snake.y - Math.sin(snake.angle) * (27 + i * 15);
+        ctx.beginPath(); ctx.arc(x, y, 14 + i * 3, snake.angle + 2.5, snake.angle + 3.8); ctx.stroke();
       }
     }
   }
   function drawCrown(x, y) {
-    ctx.save(); ctx.translate(x, y); ctx.rotate(-.12);
+    ctx.save(); ctx.translate(x, y); ctx.rotate(-.12); ctx.scale(.72, .72);
     ctx.shadowColor = '#ffd23c'; ctx.shadowBlur = 16; ctx.fillStyle = '#ffd748';
     ctx.beginPath(); ctx.moveTo(-16, 4); ctx.lineTo(-21, -12); ctx.lineTo(-8, -5); ctx.lineTo(0, -19); ctx.lineTo(8, -5); ctx.lineTo(21, -12); ctx.lineTo(16, 4); ctx.closePath(); ctx.fill();
     ctx.fillStyle = '#ffe680'; ctx.fillRect(-16, 4, 32, 5); ctx.restore();
